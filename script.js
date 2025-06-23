@@ -1,45 +1,157 @@
-// Variables to control game state
-let gameRunning = false; // Keeps track of whether game is active or not
-let dropMaker; // Will store our timer that creates drops regularly
+// Clean Water Tycoon - Starter JS
 
-// Wait for button click to start the game
-document.getElementById("start-btn").addEventListener("click", startGame);
+// Game state
+let donations = 0;
+let cleanWater = 0;
+let upgrades = {
+  bucket: { count: 0, price: 5, water: 1 },
+  well: { count: 0, price: 20, water: 5 },
+  filtration: { count: 0, price: 50, water: 20 }
+};
+let gameStarted = false;
 
-function startGame() {
-  // Prevent multiple games from running at once
-  if (gameRunning) return;
+// Water facts/messages
+const messages = [
+  "771 million people lack access to clean water.",
+  "Every $1 invested in clean water can yield $4–$12 in economic returns.",
+  "Women and girls spend 200 million hours every day collecting water.",
+  "Charity: Water has funded over 100,000 water projects worldwide.",
+  "Access to clean water can reduce water-related diseases by up to 50%.",
+  "The game never ends—just like the mission to bring clean water to all!"
+];
+let messageIndex = 0;
+let messageInterval = null;
 
-  gameRunning = true;
+// DOM elements
+const donationAmount = document.getElementById('donation-amount');
+const cleanWaterElem = document.getElementById('clean-water');
+const donateBtn = document.getElementById('donate-btn');
+const dollarSign = document.getElementById('dollar-sign');
+const resetBtn = document.getElementById('reset-btn');
+const messageBox = document.getElementById('message-box');
+const buyBtns = {
+  bucket: document.getElementById('buy-bucket'),
+  well: document.getElementById('buy-well'),
+  filtration: document.getElementById('buy-filtration')
+};
+const upgradeCounts = {
+  bucket: document.getElementById('bucket-count'),
+  well: document.getElementById('well-count'),
+  filtration: document.getElementById('filtration-count')
+};
+const upgradePrices = {
+  bucket: document.getElementById('bucket-price'),
+  well: document.getElementById('well-price'),
+  filtration: document.getElementById('filtration-price')
+};
+const village = document.getElementById('village');
 
-  // Create new drops every second (1000 milliseconds)
-  dropMaker = setInterval(createDrop, 1000);
+// --- Functions ---
+function updateUI() {
+  donationAmount.textContent = `$${donations}`;
+  cleanWaterElem.textContent = `${cleanWater} gallons`;
+  for (let key in upgrades) {
+    upgradeCounts[key].textContent = upgrades[key].count;
+    upgradePrices[key].textContent = `Price: $${upgrades[key].price}`;
+    buyBtns[key].disabled = !gameStarted || donations < upgrades[key].price;
+  }
 }
 
-function createDrop() {
-  // Create a new div element that will be our water drop
-  const drop = document.createElement("div");
-  drop.className = "water-drop";
-
-  // Make drops different sizes for visual variety
-  const initialSize = 60;
-  const sizeMultiplier = Math.random() * 0.8 + 0.5;
-  const size = initialSize * sizeMultiplier;
-  drop.style.width = drop.style.height = `${size}px`;
-
-  // Position the drop randomly across the game width
-  // Subtract 60 pixels to keep drops fully inside the container
-  const gameWidth = document.getElementById("game-container").offsetWidth;
-  const xPosition = Math.random() * (gameWidth - 60);
-  drop.style.left = xPosition + "px";
-
-  // Make drops fall for 4 seconds
-  drop.style.animationDuration = "4s";
-
-  // Add the new drop to the game screen
-  document.getElementById("game-container").appendChild(drop);
-
-  // Remove drops that reach the bottom (weren't clicked)
-  drop.addEventListener("animationend", () => {
-    drop.remove(); // Clean up drops that weren't caught
-  });
+function showMessage(msg) {
+  messageBox.textContent = msg;
 }
+
+function nextMessage() {
+  showMessage(messages[messageIndex]);
+  messageIndex = (messageIndex + 1) % messages.length;
+}
+
+function startMessages() {
+  nextMessage();
+  if (messageInterval) clearInterval(messageInterval);
+  messageInterval = setInterval(nextMessage, 60000); // every minute
+}
+
+function boingAnimation() {
+  donateBtn.classList.add('boing');
+  setTimeout(() => donateBtn.classList.remove('boing'), 300);
+}
+
+function addUpgradeToVillage(type) {
+  // For now, just add a small icon to the village area
+  const img = document.createElement('img');
+  if (type === 'bucket') {
+    img.src = 'img/water-can.png';
+    img.alt = 'Bucket';
+    img.className = 'village-upgrade bucket';
+  } else if (type === 'well') {
+    img.src = 'img/Well.png';
+    img.alt = 'Well';
+    img.className = 'village-upgrade well';
+  } else if (type === 'filtration') {
+    img.src = 'img/Water Filter.png';
+    img.alt = 'Filtration';
+    img.className = 'village-upgrade filtration';
+  }
+  img.style.width = '40px';
+  img.style.margin = '0 5px';
+  village.appendChild(img);
+}
+
+function resetGame() {
+  donations = 0;
+  cleanWater = 0;
+  for (let key in upgrades) {
+    upgrades[key].count = 0;
+  }
+  gameStarted = false;
+  // Remove upgrade images
+  document.querySelectorAll('.village-upgrade').forEach(e => e.remove());
+  updateUI();
+  showMessage('Game reset! Click the dollar sign to start donating.');
+}
+
+// --- Event Listeners ---
+donateBtn.addEventListener('click', () => {
+  donations += 1;
+  if (!gameStarted) {
+    gameStarted = true;
+    startMessages();
+  }
+  boingAnimation();
+  updateUI();
+});
+
+buyBtns.bucket.addEventListener('click', () => {
+  if (donations >= upgrades.bucket.price) {
+    donations -= upgrades.bucket.price;
+    upgrades.bucket.count++;
+    cleanWater += upgrades.bucket.water;
+    addUpgradeToVillage('bucket');
+    updateUI();
+  }
+});
+buyBtns.well.addEventListener('click', () => {
+  if (donations >= upgrades.well.price) {
+    donations -= upgrades.well.price;
+    upgrades.well.count++;
+    cleanWater += upgrades.well.water;
+    addUpgradeToVillage('well');
+    updateUI();
+  }
+});
+buyBtns.filtration.addEventListener('click', () => {
+  if (donations >= upgrades.filtration.price) {
+    donations -= upgrades.filtration.price;
+    upgrades.filtration.count++;
+    cleanWater += upgrades.filtration.water;
+    addUpgradeToVillage('filtration');
+    updateUI();
+  }
+});
+
+resetBtn.addEventListener('click', resetGame);
+
+// --- Initial UI ---
+updateUI();
+showMessage('Click the dollar sign to start donating!');

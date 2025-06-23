@@ -1,25 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Water Drop Game</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clean Water Tycoon</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="game-wrapper">
-        <h1 class="game-title">Water Drop</h1>
-        <p class="game-tagline">Catch the good drops, avoid the bad ones!</p>
-        <div class="score-panel">
-            <div class="score">Score: <span id="score">0</span></div>
-            <div class="timer">Time: <span id="time">30</span>s</div>
-            <button id="start-btn">Start Game</button>
+  <header>
+    <img src="img/cw_logo-horizontal.png" alt="Charity Water Logo" class="header-logo">
+    <h1>Clean Water Tycoon</h1>
+    <p class="subtitle">Help provide clean water for all!</p>
+  </header>
+  <main>
+    <section class="left-panel">
+      <div class="donation-box">
+        <h2>Donations:</h2>
+        <p id="donation-amount">$0</p>
+        <h3>Clean Water for Village:</h3>
+        <p id="clean-water">0 gallons</p>
+      </div>
+    </section>
+    <section class="village-section">
+      <div class="village" id="village">
+        <img src="img/cw_logo.png" alt="Village" class="village-bg">
+        <div class="houses">
+          <img src="img/House.png" alt="House" class="house house1">
+          <img src="img/House.png" alt="House" class="house house2">
+          <img src="img/House.png" alt="House" class="house house3">
+          <img src="img/House.png" alt="House" class="house house4">
         </div>
-        
-        <div id="game-container">
+        <button id="donate-btn" class="dollar-btn">
+          <span id="dollar-sign">$</span>
+        </button>
+        <p class="donate-instruction">Donate Now!<br><span class="small">(Click the dollar sign to raise money for upgrades)</span></p>
+        <button id="reset-btn" class="reset-btn">Reset Game</button>
+      </div>
+    </section>
+    <section class="right-panel">
+      <div class="upgrade-menu">
+        <h2>Upgrades</h2>
+        <div class="upgrade" data-upgrade="bucket">
+          <span>Container of Clean Water</span>
+          <span id="bucket-count">0</span>
+          <span class="price" id="bucket-price">Price: $5</span>
+          <button class="buy-btn" id="buy-bucket" disabled>Buy</button>
         </div>
-    </div>
-    
-    <script src="script.js"></script>
+        <div class="upgrade" data-upgrade="well">
+          <span>Well</span>
+          <span id="well-count">0</span>
+          <span class="price" id="well-price">Price: $20</span>
+          <button class="buy-btn" id="buy-well" disabled>Buy</button>
+        </div>
+        <div class="upgrade" data-upgrade="filtration">
+          <span>Filtration System</span>
+          <span id="filtration-count">0</span>
+          <span class="price" id="filtration-price">Price: $50</span>
+          <button class="buy-btn" id="buy-filtration" disabled>Buy</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <div id="message-box" class="message-box"></div>
+  </footer>
+  <script src="script.js"></script>
 </body>
 </html>
