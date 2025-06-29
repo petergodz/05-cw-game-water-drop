@@ -14,16 +14,33 @@
   </header>
   <main>
     <section class="left-panel">
+      <!-- Difficulty Setting -->
+      <div class="difficulty-box">
+        <h3>Difficulty</h3>
+        <label>
+          <input type="radio" name="difficulty" value="easy" checked>
+          Easy
+        </label>
+        <label>
+          <input type="radio" name="difficulty" value="medium">
+          Medium
+        </label>
+        <label>
+          <input type="radio" name="difficulty" value="hard">
+          Hard
+        </label>
+      </div>
       <div class="donation-box">
-        <h2>Donations:</h2>
+        <h2>Donations</h2>
         <p id="donation-amount">$0</p>
         <h3>Clean Water for Village:</h3>
         <p id="clean-water">0 gallons</p>
       </div>
+      <button id="reset-btn"
+      class="reset-btn">Reset Game</button>
     </section>
     <section class="village-section">
       <div class="village" id="village">
-        <img src="img/cw_logo.png" alt="Village" class="village-bg">
         <div class="houses">
           <img src="img/House.png" alt="House" class="house house1">
           <img src="img/House.png" alt="House" class="house house2">
@@ -33,8 +50,7 @@
         <button id="donate-btn" class="dollar-btn">
           <span id="dollar-sign">$</span>
         </button>
-        <p class="donate-instruction">Donate Now!<br><span class="small">(Click the dollar sign to raise money for upgrades)</span></p>
-        <button id="reset-btn" class="reset-btn">Reset Game</button>
+        <p class="donate-instruction">Donate Now!<br><span class="small">Click the dollar sign to raise money for upgrades (click upgrades to sell them back for donations)</span></p>
       </div>
     </section>
     <section class="right-panel">
@@ -67,3 +83,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+

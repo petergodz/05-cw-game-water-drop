@@ -4,7 +4,7 @@ body {
   background: #f7fafc;
   margin: 0;
   padding: 0;
-  color: #222;
+  color: #ffc107;
 }
 header {
   text-align: center;
@@ -68,7 +68,7 @@ main {
   margin: 0 10px;
 }
 .dollar-btn {
-  background: #3ebffa;
+  background: #ffc107;
   color: #fff;
   border: none;
   border-radius: 50%;
@@ -101,7 +101,7 @@ main {
 }
 .small {
   font-size: 0.9rem;
-  color: #888;
+  color: #ffc107
 }
 .reset-btn {
   margin-top: 1.5rem;

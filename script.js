@@ -1,5 +1,8 @@
 // Clean Water Tycoon - Starter JS
 
+
+
+
 // Game state
 let donations = 0;
 let cleanWater = 0;
@@ -9,6 +12,9 @@ let upgrades = {
   filtration: { count: 0, price: 50, water: 20 }
 };
 let gameStarted = false;
+
+
+
 
 // Water facts/messages
 const messages = [
@@ -21,6 +27,9 @@ const messages = [
 ];
 let messageIndex = 0;
 let messageInterval = null;
+
+
+
 
 // DOM elements
 const donationAmount = document.getElementById('donation-amount');
@@ -46,6 +55,9 @@ const upgradePrices = {
 };
 const village = document.getElementById('village');
 
+
+
+
 // --- Functions ---
 function updateUI() {
   donationAmount.textContent = `$${donations}`;
@@ -57,14 +69,23 @@ function updateUI() {
   }
 }
 
+
+
+
 function showMessage(msg) {
   messageBox.textContent = msg;
 }
+
+
+
 
 function nextMessage() {
   showMessage(messages[messageIndex]);
   messageIndex = (messageIndex + 1) % messages.length;
 }
+
+
+
 
 function startMessages() {
   nextMessage();
@@ -72,10 +93,16 @@ function startMessages() {
   messageInterval = setInterval(nextMessage, 60000); // every minute
 }
 
+
+
+
 function boingAnimation() {
   donateBtn.classList.add('boing');
   setTimeout(() => donateBtn.classList.remove('boing'), 300);
 }
+
+
+
 
 function addUpgradeToVillage(type) {
   // For now, just add a small icon to the village area
@@ -95,8 +122,25 @@ function addUpgradeToVillage(type) {
   }
   img.style.width = '40px';
   img.style.margin = '0 5px';
+  // Add sell functionality
+  img.title = `Click to sell this ${type} upgrade for $${upgrades[type].price}`;
+  img.style.cursor = 'pointer';
+  img.addEventListener('click', function() {
+    // Remove upgrade from state and UI
+    if (upgrades[type].count > 0) {
+      upgrades[type].count--;
+      cleanWater -= upgrades[type].water;
+      donations += upgrades[type].price;
+      img.remove();
+      updateUI();
+      showMessage(`Sold a ${type} upgrade for $${upgrades[type].price}!`);
+    }
+  });
   village.appendChild(img);
 }
+
+
+
 
 function resetGame() {
   donations = 0;
@@ -107,9 +151,13 @@ function resetGame() {
   gameStarted = false;
   // Remove upgrade images
   document.querySelectorAll('.village-upgrade').forEach(e => e.remove());
+  updateUpgradePricesForDifficulty();
   updateUI();
   showMessage('Game reset! Click the dollar sign to start donating.');
 }
+
+
+
 
 // --- Event Listeners ---
 donateBtn.addEventListener('click', () => {
@@ -121,6 +169,9 @@ donateBtn.addEventListener('click', () => {
   boingAnimation();
   updateUI();
 });
+
+
+
 
 buyBtns.bucket.addEventListener('click', () => {
   if (donations >= upgrades.bucket.price) {
@@ -150,8 +201,74 @@ buyBtns.filtration.addEventListener('click', () => {
   }
 });
 
+
+
+
 resetBtn.addEventListener('click', resetGame);
+
+
+
 
 // --- Initial UI ---
 updateUI();
 showMessage('Click the dollar sign to start donating!');
+
+
+// Difficulty multipliers
+const difficultyMultipliers = {
+  easy: 1,
+  medium: 1.5,
+  hard: 2
+};
+let currentDifficulty = 'easy';
+
+
+// Store base prices for reset and difficulty switching
+const basePrices = {
+  bucket: 5,
+  well: 20,
+  filtration: 50
+};
+
+
+// Update upgrade prices based on difficulty
+function updateUpgradePricesForDifficulty() {
+  for (let key in upgrades) {
+    upgrades[key].price = Math.round(basePrices[key] * difficultyMultipliers[currentDifficulty]);
+  }
+}
+
+
+// Listen for difficulty change
+document.querySelectorAll('input[name="difficulty"]').forEach(radio => {
+  radio.addEventListener('change', (e) => {
+    currentDifficulty = e.target.value;
+    updateUpgradePricesForDifficulty();
+    updateUI();
+  });
+});
+
+
+// When resetting, also reset difficulty to easy and prices
+function resetGame() {
+  donations = 0;
+  cleanWater = 0;
+  for (let key in upgrades) {
+    upgrades[key].count = 0;
+  }
+  gameStarted = false;
+  // Remove upgrade images
+  document.querySelectorAll('.village-upgrade').forEach(e => e.remove());
+  updateUpgradePricesForDifficulty();
+  updateUI();
+  showMessage('Game reset! Click the dollar sign to start donating.');
+}
+
+
+// On page load, set prices for current difficulty
+updateUpgradePricesForDifficulty();
+updateUI();
+
+
+
+
